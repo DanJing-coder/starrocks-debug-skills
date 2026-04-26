@@ -1,0 +1,80 @@
+name: lint
+
+on:
+  pull_request:
+    paths:
+      - "**.md"
+      - ".github/workflows/lint.yml"
+  push:
+    branches: [main]
+
+jobs:
+  banned-keywords:
+    name: Banned keywords (customer names, internal branding, Chinese)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Customer name scan
+        run: |
+          set -euo pipefail
+          # CONTRIBUTING.md rule: "No customer names". This list catches the
+          # historical names that appeared in earlier internal drafts of this
+          # content. Add to this list if any new customer name slips in.
+          patterns=(
+            'walmart' 'hangyin' 'kaspi' 'kuayue' 'geely' 'zhongtai' 'haopeng'
+            'intuit' 'applovin' 'mailchimp' 'expedia' 'f5 networks' 'celerdata'
+            'byoc' 'feishu'
+          )
+          fail=0
+          for p in "${patterns[@]}"; do
+            # case-insensitive whole-word-ish match across all .md
+            if grep -RIni --include='*.md' -E "(^|[^a-z])${p}([^a-z]|$)" .; then
+              echo "::error::Banned keyword '${p}' found above. Anonymize before merging."
+              fail=1
+            fi
+          done
+          # 'f5' on its own is too short to grep safely without false positives
+          # (e.g. 'f5' as a hex digit prefix). 'f5 networks' above is the safer match.
+          exit $fail
+
+      - name: Chinese character scan
+        run: |
+          set -euo pipefail
+          # CONTRIBUTING.md rule: "English only".
+          if grep -RIPn --include='*.md' '[\x{4e00}-\x{9fff}]' .; then
+            echo "::error::Chinese characters found above. CONTRIBUTING.md requires English only."
+            exit 1
+          fi
+
+  frontmatter:
+    name: YAML frontmatter presence
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Every skill/case/tool .md must start with --- frontmatter
+        run: |
+          set -euo pipefail
+          fail=0
+          while IFS= read -r f; do
+            first_line=$(head -n 1 "$f")
+            if [[ "$first_line" != "---" ]]; then
+              echo "::error file=${f}::Missing YAML frontmatter (file must start with '---')."
+              fail=1
+            fi
+            # Required keys: type, category, keywords. case files also need 'issue'.
+            for key in type category keywords; do
+              if ! awk '/^---$/{c++} c==1 && /^'"$key"': /{found=1} c==2{exit} END{exit !found}' "$f"; then
+                echo "::error file=${f}::Frontmatter missing required key '${key}'."
+                fail=1
+              fi
+            done
+            if [[ "$f" == ./cases/* ]]; then
+              if ! awk '/^---$/{c++} c==1 && /^issue: /{found=1} c==2{exit} END{exit !found}' "$f"; then
+                echo "::error file=${f}::Case file missing required frontmatter key 'issue'."
+                fail=1
+              fi
+            fi
+          done < <(find skills cases tools -type f -name '*.md' ! -name '_index.md')
+          exit $fail
