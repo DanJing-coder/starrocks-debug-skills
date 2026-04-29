@@ -43,6 +43,7 @@ This directory contains real-world troubleshooting cases with complete investiga
 | case-015 | concurrency | Memory volatility | Session timeout override |
 | case-016 | data-lake | Kerberos auth | Kerberos authentication failures |
 | case-017 | import | Reached timeout | Replica sync thread pool saturation |
+| case-018 | import | ORC compression overflow | Large ORC file import fails, use zstd or reduce file size |
 
 ## Case Template
 
