@@ -14,7 +14,7 @@ This directory contains troubleshooting skill guides. Each skill file should fol
 |---|---|---|---|
 | 01 | query | Query hang, slow query, profile analysis | query hang, slow query, profile, scan, join, data skew |
 | 02 | import | Import slow, timeout, RPC failed, publish timeout | import, broker load, stream load, RPC failed, publish timeout |
-| 03 | node | BE Crash, BE OOM, FE deadlock, FE Full GC | BE crash, OOM, FE deadlock, FE GC, memory |
+| 03 | node | BE Crash, BE OOM, FE deadlock, FE Full GC | BE crash, OOM, FE deadlock, FE GC, memory, lock ordering, DeadLockChecker, jstack, fair lock |
 | 04 | materialized-view | MV refresh failures, rewrite failures | MV refresh, MV timeout, MV inactive, query rewrite |
 | 05 | data-lake | HMS, Kerberos, HDFS/S3, external table | HMS, Hive, Kerberos, HDFS, S3, external table |
 | 06 | shared-data | DataCache, S3 issues in shared-data architecture | DataCache, S3, FE leader switch, shared-data |
@@ -22,6 +22,8 @@ This directory contains troubleshooting skill guides. Each skill file should fol
 | 08 | deployment | FE/BE startup, port conflicts, BDB | FE startup, BE startup, port conflict, BDB, JDK |
 | 09 | high-concurrency | High QPS optimization | high QPS, connection pool, PreparedStatement, query cache |
 | 10 | resource-isolation | Resource groups, query queues | resource group, query queue, SQL blacklist, circuit breaker |
+| 11 | balance | Tablet scheduler, cluster balance, decommission | tablet scheduler, balance, clone, decommission, replica missing, colocate balance |
+| 12 | compaction | Shared-nothing compaction issues | compaction, too many versions, compaction score, base compaction, cumulative compaction, rowset, version count |
 
 ## File Template
 

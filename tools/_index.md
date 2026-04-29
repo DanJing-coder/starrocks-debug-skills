@@ -13,9 +13,11 @@ This directory contains diagnostic utilities and quick reference guides.
 | # | Tool | Description | Purpose |
 |---|---|---|---|
 | 01 | diagnostic-commands | SQL and shell commands quick reference | Quick lookup for diagnosis |
-| 02 | known-bugs | Known issues and fixes reference | Version-specific bug awareness |
-| 03 | log-patterns | Log search patterns | Error hunting in logs |
-| 04 | parameters | Key FE/BE parameters reference | Configuration tuning |
+| 02 | information-schema | Information schema diagnostic queries | System table-based analysis |
+| 03 | mv-diagnostic-sql | Materialized view diagnostic SQL queries | MV refresh, rewrite, performance analysis |
+| 04 | known-bugs | Known issues and fixes reference | Version-specific bug awareness |
+| 05 | log-patterns | Log search patterns | Error hunting in logs |
+| 06 | parameters | Key FE/BE parameters reference | Configuration tuning |
 
 ## Tool Template
 

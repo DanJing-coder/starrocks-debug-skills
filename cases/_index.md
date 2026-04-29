@@ -41,6 +41,8 @@ This directory contains real-world troubleshooting cases with complete investiga
 | case-013 | shared-data | DataCache autoscaling | Cache eviction regression |
 | case-014 | query | Scan skew | Bucket key optimization |
 | case-015 | concurrency | Memory volatility | Session timeout override |
+| case-016 | data-lake | Kerberos auth | Kerberos authentication failures |
+| case-017 | import | Reached timeout | Replica sync thread pool saturation |
 
 ## Case Template
 

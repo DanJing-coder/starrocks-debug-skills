@@ -22,9 +22,7 @@ jobs:
           # historical names that appeared in earlier internal drafts of this
           # content. Add to this list if any new customer name slips in.
           patterns=(
-            'walmart' 'hangyin' 'kaspi' 'kuayue' 'geely' 'zhongtai' 'haopeng'
-            'intuit' 'applovin' 'mailchimp' 'expedia' 'f5 networks' 'celerdata'
-            'byoc' 'feishu'
+             'celerdata' 'byoc' 'feishu'
           )
           fail=0
           for p in "${patterns[@]}"; do

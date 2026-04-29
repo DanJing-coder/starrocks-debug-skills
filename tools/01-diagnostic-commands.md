@@ -89,9 +89,32 @@ curl -s http://<BE_IP>:<BE_HTTP_PORT>/metrics | grep "^starrocks_be_.*_mem_bytes
 # Check tcmalloc status
 curl -s http://<BE_IP>:<BE_HTTP_PORT>/memz
 
-# Find high-memory queries in BE log
-grep "PeakMemoryUsage" be.INFO | sort -t= -k2 -h
+# Find high-memory queries via mem_tracker or large memory alloc log
+curl -s http://<BE_IP>:<BE_HTTP_PORT>/mem_tracker | grep "query"
+
+# Find large memory allocations (OOM investigation)
+grep "large memory alloc" be.WARNING
 ```
+
+### Audit Log Analysis for TOP N Memory Queries
+
+Use `analyze_logs.py` to find queries with highest memory consumption:
+
+```bash
+# Find top 3 BE memory consumers
+python3 analyze_logs.py "2025-04-15 00:00:00" "2025-04-15 01:00:00" "MemCostBytes" 3 fe.audit.log
+
+# Find top 3 FE memory consumers
+python3 analyze_logs.py "2025-04-15 00:00:00" "2025-04-15 01:00:00" "QueryFEAllocatedMemory" 3 fe.audit.log
+
+# Find top 3 CPU-intensive queries
+python3 analyze_logs.py "2025-04-15 00:00:00" "2025-04-15 01:00:00" "CpuCostNs" 3 fe.audit.log
+
+# Find top 3 scan-heavy queries
+python3 analyze_logs.py "2025-04-15 00:00:00" "2025-04-15 01:00:00" "ScanBytes" 3 fe.audit.log
+```
+
+Available sort fields: `CpuCostNs`, `ScanBytes`, `MemCostBytes`, `QueryFEAllocatedMemory`.
 
 ---
 
@@ -258,7 +281,27 @@ grep "checkpoint" fe.log | tail -20
 
 ---
 
-## 12. Common Operational Issues
+## 12. Materialized View Diagnostics
+
+For comprehensive MV diagnostic SQL queries, see [tools/03-mv-diagnostic-sql.md](03-mv-diagnostic-sql.md).
+
+Quick reference:
+
+```sql
+-- Check MV state
+SHOW MATERIALIZED VIEWS;
+
+-- View refresh history
+SELECT * FROM information_schema.task_runs WHERE task_name = 'mv-<mv_id>' \G
+
+-- Find currently RUNNING MV tasks
+SELECT TASK_NAME, CREATE_TIME, FINISH_TIME, STATE 
+FROM information_schema.task_runs WHERE STATE = 'RUNNING';
+```
+
+---
+
+## 13. Common Operational Issues
 
 | Issue | Solution |
 |---|---|
@@ -273,7 +316,7 @@ grep "checkpoint" fe.log | tail -20
 
 ---
 
-## 13. BE Decommission Checklist
+## 14. BE Decommission Checklist
 
 Before decommissioning a BE node, verify:
 
@@ -287,7 +330,7 @@ Before decommissioning a BE node, verify:
 
 ---
 
-## 14. FE-BE Heartbeat
+## 15. FE-BE Heartbeat
 
 FE sends heartbeat to BE every 5 seconds (`Config.heartbeat_timeout_second`). If 3
 consecutive heartbeats fail (`Config.heartbeat_retry_times`), BE is marked `not alive`.
@@ -296,7 +339,7 @@ begins. If the BE recovers, its replicas are deleted.
 
 ---
 
-## 15. SQL Troubleshooting Toolkit
+## 16. SQL Troubleshooting Toolkit
 
 ```sql
 -- Query plan analysis
@@ -318,7 +361,7 @@ SET cbo_enable_low_cardinality_optimize = false;
 
 ---
 
-## 16. Disable Statistics Collection (Emergency)
+## 17. Disable Statistics Collection (Emergency)
 
 ```sql
 ADMIN SET FRONTEND CONFIG("enable_statistic_collect" = "false");
@@ -336,6 +379,7 @@ relevant skill file for context:
 - For query / scan / join issues, see `skills/01-query.md`.
 - For import / RPC / publish issues, see `skills/02-import.md`.
 - For BE OOM / crash / FE deadlock, see `skills/03-node.md`.
+- For MV refresh failures / rewrite issues, see `skills/04-materialized-view.md`.
 - For shared-data and DataCache issues, see `skills/06-shared-data.md`.
 
 If your environment exposes MCP tools for log search, metric queries, or remote command

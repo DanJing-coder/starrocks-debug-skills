@@ -14,6 +14,8 @@ query rewrite failures, and sync MV optimization.
 
 ## 1. Diagnostic Commands
 
+For comprehensive MV diagnostic SQL queries, see [tools/03-mv-diagnostic-sql.md](../tools/03-mv-diagnostic-sql.md).
+
 ```sql
 -- Check MV state (is_active, last_refresh_state, last_refresh_error_message)
 SHOW MATERIALIZED VIEWS;

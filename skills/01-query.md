@@ -104,9 +104,12 @@ Action: `KILL` slow queries or restart the overloaded BE node.
 # Find slowest queries in audit log
 grep 'slow_query' fe.audit.log | cut -d '=' -f 6 | cut -d '|' -f 1 | sort -g
 
-# Find highest memory queries in BE log
-grep "PeakMemoryUsage" be.INFO | sort -t= -k2 -h
-# Trace: fragment_id -> query_id -> find SQL in fe.audit.log
+# Find large memory allocations in BE log (query_id included)
+grep "large memory alloc" be.WARNING
+# Trace: query_id -> find SQL in fe.audit.log
+
+# Or use analyze_logs.py for TOP N memory consumers
+python3 analyze_logs.py "2025-04-15 00:00:00" "2025-04-15 01:00:00" "MemCostBytes" 3 fe.audit.log
 ```
 
 ### Profile Time Discrepancy Analysis
