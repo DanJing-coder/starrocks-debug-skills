@@ -212,7 +212,7 @@ Key interfaces: `tablet_writer_open`, `tablet_writer_add_chunks`, `tablet_writer
 ### Memtable Flush Monitoring
 
 | Metric | Meaning |
-|---|---|---|
+|---|---|
 | `pending` | Queue wait time |
 | `execute` | Total flush time |
 | `io` | IO portion of flush |
@@ -227,7 +227,7 @@ Analysis:
 ### Segment Replicate Sync Monitoring (Shared-Nothing Only)
 
 | Metric | Meaning |
-|---|---|---|
+|---|---|
 | `pending` | Queue wait time |
 | `execute` | Sync time (includes waiting for secondary commit) |
 
@@ -239,7 +239,7 @@ Analysis:
 ### Segment Flush Monitoring (Shared-Nothing Only)
 
 | Metric | Meaning |
-|---|---|---|
+|---|---|
 | `pending` | Queue wait time |
 | `execute` | Total flush time |
 | `io` | IO portion |
@@ -370,7 +370,7 @@ ANALYZE PROFILE FROM '<profile_id>';
 ### OlapTableSink Profile Metrics
 
 | Metric | Meaning |
-|---|---|---|
+|---|---|
 | `IndexNum` | Number of synchronous material views |
 | `ReplicatedStorage` | Single leader replication enabled |
 | `TxnID` | Transaction ID |
@@ -388,7 +388,7 @@ ANALYZE PROFILE FROM '<profile_id>';
 ### LoadChannel Profile Metrics
 
 | Metric | Meaning |
-|---|---|---|
+|---|---|
 | `Address` | BE host |
 | `LoadMemoryLimit` | Import memory limit |
 | `PeakMemoryUsage` | Peak memory usage |
