@@ -45,6 +45,7 @@ This directory contains real-world troubleshooting cases with complete investiga
 | case-017 | import | Reached timeout | Replica sync thread pool saturation |
 | case-018 | import | ORC compression overflow | Large ORC file import fails, use zstd or reduce file size |
 | case-019 | tablet | Inverted index pending | ALTER TABLE ADD INDEX stuck in PENDING, workaround with history_job_keep_max_second |
+| case-020 | deployment | FE startup blocked | Hive catalog connection blocks FE startup, upgrade to 3.5.0 with lazy connector |
 
 ## Case Template
 
