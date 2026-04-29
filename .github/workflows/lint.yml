@@ -76,3 +76,39 @@ jobs:
             fi
           done < <(find skills cases tools -type f -name '*.md' ! -name '_index.md')
           exit $fail
+
+  markdown-tables:
+    name: Markdown table format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate table column counts
+        run: |
+          set -euo pipefail
+          fail=0
+          while IFS= read -r f; do
+            # Check each table: header row and separator row must have same column count
+            awk '
+              /^\|.*\|$/ {
+                if (!in_table) {
+                  in_table = 1
+                  header_cols = gsub(/\|/, "|") - 1
+                  next
+                }
+                if (in_table == 1) {
+                  # This should be separator row
+                  sep_cols = gsub(/\|/, "|") - 1
+                  if (header_cols != sep_cols) {
+                    print "::error file=" FILENAME ",line=" NR "::Table header has " header_cols " columns but separator has " sep_cols " columns."
+                    fail = 1
+                  }
+                  in_table = 2
+                  next
+                }
+              }
+              !/^\|.*\|$/ { in_table = 0 }
+              END { exit fail }
+            ' "$f" || fail=1
+          done < <(find . -name '*.md' -type f)
+          exit $fail
