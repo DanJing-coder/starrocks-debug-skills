@@ -68,7 +68,7 @@ User verified via monitoring:
 
 FE logs showed only 2 entries for the job_id, indicating the job was not progressing.
 
-**Initial hypothesis by Allen Lin**: "可能有一些前面的导入卡住了" (Some previous imports might be stuck)
+**Initial hypothesis**: Some previous imports might be stuck.
 
 ## Root Cause
 
